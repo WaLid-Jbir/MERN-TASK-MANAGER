@@ -156,3 +156,34 @@ export const getUser = asyncHandler(async (req, res) => {
         });
     }
 });
+
+export const updateUser = asyncHandler(async (req, res) => {
+
+    // get user details from token
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+        const { name, photo, bio } = req.body;
+        // update user
+        user.name = name || user.name;
+        user.photo = photo || user.photo;
+        user.bio = bio || user.bio;
+
+        const updatedUser = await user.save();
+
+        res.status(200).json({
+            _id: updatedUser._id,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            photo: updatedUser.photo,
+            bio: updatedUser.bio,
+            role: updatedUser.role,
+            isVerified: updatedUser.isVerified,
+        });
+    }else {
+        res.status(404).json({
+            success: false,
+            message: "User not found",
+        });
+    }
+});
