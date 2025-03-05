@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler";
+import bcrypt from "bcrypt";
 import User from "../../models/auth/userModel.js";
 import { generateToken } from "../../helpers/generateToken.js";
-import bcrypt from "bcrypt";
 
 export const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
@@ -140,4 +140,19 @@ export const logoutUser = asyncHandler(async (req, res) => {
         success: true,
         message: "User logged out",
     });
-})
+});
+
+export const getUser = asyncHandler(async (req, res) => {
+
+    // get user details from token
+    const user = await User.findById(req.user._id).select("-password");
+
+    if (user) {
+        res.status(200).json({ user });
+    } else {
+        res.status(404).json({
+            success: false,
+            message: "User not found",
+        });
+    }
+});
