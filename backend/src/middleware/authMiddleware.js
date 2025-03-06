@@ -2,6 +2,7 @@ import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import User from "../models/auth/userModel.js";
 
+// protect routes
 export const protectRoute = asyncHandler(async (req, res, next) => {
     try {
         // check if the user is authenticated
@@ -38,6 +39,7 @@ export const protectRoute = asyncHandler(async (req, res, next) => {
     }
 });
 
+// check if the user is an admin
 export const adminMiddleware = asyncHandler(async (req, res, next) => {
     if (req.user && req.user.role === "admin") {
         next();
@@ -46,6 +48,32 @@ export const adminMiddleware = asyncHandler(async (req, res, next) => {
         res.status(403).json({
             success: false,
             message: "Unauthorized, you are not an admin!",
+        });
+    }
+});
+
+// check if the user is a creator
+export const creatorMiddleware = asyncHandler(async (req, res, next) => {
+    if (req.user && req.user.role === "creator" || req.user.role === "admin") {
+        next();
+        return;
+    } else {
+        res.status(403).json({
+            success: false,
+            message: "Unauthorized, you are not a creator or admin!",
+        });
+    }
+});
+
+// check if the user account is verified
+export const verifiedMiddleware = asyncHandler(async (req, res, next) => {
+    if (req.user && req.user.isVerified) {
+        next();
+        return;
+    } else {
+        res.status(403).json({
+            success: false,
+            message: "Unauthorized, please verify your account!",
         });
     }
 });
