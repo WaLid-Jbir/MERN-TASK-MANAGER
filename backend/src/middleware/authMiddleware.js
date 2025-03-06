@@ -37,3 +37,15 @@ export const protectRoute = asyncHandler(async (req, res, next) => {
         });
     }
 });
+
+export const adminMiddleware = asyncHandler(async (req, res, next) => {
+    if (req.user && req.user.role === "admin") {
+        next();
+        return;
+    } else {
+        res.status(403).json({
+            success: false,
+            message: "Unauthorized, you are not an admin!",
+        });
+    }
+});
