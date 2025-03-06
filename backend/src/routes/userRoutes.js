@@ -1,7 +1,7 @@
 import express from 'express';
 import { registerUser, loginUser, logoutUser, getUser, updateUser } from '../controllers/auth/userController.js';
-import { deleteUser } from '../controllers/auth/adminController.js';
-import { protectRoute, adminMiddleware } from '../middleware/authMiddleware.js';
+import { deleteUser, getAllUsers } from '../controllers/auth/adminController.js';
+import { protectRoute, adminMiddleware, creatorMiddleware, verifiedMiddleware } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
@@ -13,5 +13,8 @@ router.patch('/user', protectRoute, updateUser);
 
 // admin routes
 router.delete('/admin/users/:id', protectRoute, adminMiddleware, deleteUser);
+
+// get all users
+router.get('/admin/users', protectRoute, creatorMiddleware, getAllUsers);
 
 export default router;
