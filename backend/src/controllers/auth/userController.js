@@ -2,6 +2,7 @@ import asyncHandler from "express-async-handler";
 import bcrypt from "bcrypt";
 import User from "../../models/auth/userModel.js";
 import { generateToken } from "../../helpers/generateToken.js";
+import jwt from "jsonwebtoken";
 
 export const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
@@ -185,5 +186,26 @@ export const updateUser = asyncHandler(async (req, res) => {
             success: false,
             message: "User not found",
         });
+    }
+});
+
+// login status
+export const userLoginStatus = asyncHandler(async (req, res) => {
+    const token = req.cookies.token;
+
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized, please login!",
+        });
+    }
+
+    // verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (decoded) {
+        return res.status(200).json(true);
+    }
+    else {
+        return res.status(401).json(false);
     }
 });
