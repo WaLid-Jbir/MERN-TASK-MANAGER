@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerUser, loginUser, logoutUser, getUser, updateUser } from '../controllers/auth/userController.js';
+import { registerUser, loginUser, logoutUser, getUser, updateUser, userLoginStatus } from '../controllers/auth/userController.js';
 import { deleteUser, getAllUsers } from '../controllers/auth/adminController.js';
 import { protectRoute, adminMiddleware, creatorMiddleware, verifiedMiddleware } from '../middleware/authMiddleware.js';
 
@@ -16,5 +16,8 @@ router.delete('/admin/users/:id', protectRoute, adminMiddleware, deleteUser);
 
 // get all users
 router.get('/admin/users', protectRoute, creatorMiddleware, getAllUsers);
+
+// login status
+router.get('/login-status', userLoginStatus);
 
 export default router;
