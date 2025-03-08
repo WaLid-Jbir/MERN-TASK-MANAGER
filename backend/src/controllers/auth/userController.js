@@ -1,8 +1,12 @@
 import asyncHandler from "express-async-handler";
 import bcrypt from "bcrypt";
 import User from "../../models/auth/userModel.js";
+import Token from "../../models/auth/tokenModel.js";
 import { generateToken } from "../../helpers/generateToken.js";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import hashToken from "../../helpers/hashToken.js";
+import sendEmail from "../../helpers/sendEmail.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
@@ -207,5 +211,72 @@ export const userLoginStatus = asyncHandler(async (req, res) => {
     }
     else {
         return res.status(401).json(false);
+    }
+});
+
+// email verification
+export const verifyEmail = asyncHandler(async (req, res) => {
+
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+        return res.status(404).json({
+            success: false,
+            message: "User not found",
+        });
+    }
+
+    if (user.isVerified) {
+        return res.status(400).json({
+            success: false,
+            message: "User already verified",
+        });
+    }
+
+    let token = await Token.findOne({ userId: user._id });
+
+    // delete old token
+    if (token) {
+        await token.deleteOne();
+    }
+
+    // create new verification token
+    const verificationToken = crypto.randomBytes(64).toString("hex") + user._id;
+
+    // hash token
+    const hashedToken = await hashToken(verificationToken);
+
+    // save token to database
+    await new Token({
+        userId: user._id,
+        verificationToken: hashedToken,
+        createdAt: Date.now(),
+        expiredAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
+    }).save();
+
+    // create verification link
+    const verificationLink = `${process.env.CLIENT_URL}/verify-email/${verificationToken}`;
+
+    // send email
+    const subject = "Email Verification - TASK_MNG";
+    const send_to = user.email;
+    const reply_to = "noreply@gmail.com";
+    const template = "emailVerification";
+    const send_from = process.env.USER_EMAIL;
+    const name = user.name;
+    const url = verificationLink;
+
+    try {
+        await sendEmail(subject, send_to, send_from, reply_to, template, name, url);
+        res.status(200).json({
+            success: true,
+            message: "Email sent successfully, please check your email",
+        });
+    } catch (error) {
+        console.log("Error sending email: ", error);
+        return res.status(500).json({
+            success: false,
+            message: "Email could not be sent, please try again",
+        });
     }
 });
