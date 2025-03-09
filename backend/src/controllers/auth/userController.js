@@ -280,3 +280,50 @@ export const verifyEmail = asyncHandler(async (req, res) => {
         });
     }
 });
+
+// verify user
+export const verifyUser = asyncHandler(async (req, res) => {
+    const { verificationToken } = req.params;
+    if (!verificationToken) {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid verification token",
+        });
+    }
+
+    // hash the token because it was hashed before saving to the database
+    const hashedToken = await hashToken(verificationToken);
+
+    // find user with the verification token
+    const userToken = await Token.findOne({
+        verificationToken: hashedToken,
+        expiredAt: { $gt: Date.now() },
+    });
+
+    if (!userToken) {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid or expired verification token",
+        });
+    }
+
+    // find user with the userId from the token
+    const user = await User.findById(userToken.userId);
+
+    if(user.isVerifiied){
+        return res.status(400).json({
+            success: false,
+            message: "User already verified",
+        });
+    }
+
+    // update user
+    user.isVerified = true;
+    await user.save();
+
+    res.status(200).json({
+        success: true,
+        message: "User verified successfully",
+    });
+
+});
