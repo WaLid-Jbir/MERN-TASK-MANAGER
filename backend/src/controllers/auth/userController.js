@@ -327,3 +327,74 @@ export const verifyUser = asyncHandler(async (req, res) => {
     });
 
 });
+
+// forgot password
+export const forgotPassword = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({
+            success: false,
+            message: "Please provide an email",
+        });
+    }
+
+    // check if user exists
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        return res.status(404).json({
+            success: false,
+            message: "User not found",
+        });
+    }
+
+    // see if the token exists
+    let token = await Token.findOne({ userId: user._id });
+
+    // delete old token
+    if (token) {
+        await token.deleteOne();
+    }
+
+    // create a reset password token using the user id
+    const passwordResetToken = crypto.randomBytes(64).toString("hex") + user._id;
+
+    // hash token
+    const hashedToken = await hashToken(passwordResetToken);
+
+    // save token to database
+    await new Token({
+        userId: user._id,
+        passwordResetToken: hashedToken,
+        createdAt: Date.now(),
+        expiredAt: Date.now() + 60 * 60 * 1000, // 1 hour
+    }).save();
+
+    // reset password link
+    const resetLink = `${process.env.CLIENT_URL}/reset-password/${passwordResetToken}`;
+
+    // send email
+    const subject = "Password Reset - TASK_MNG";
+    const send_to = user.email;
+    const reply_to = "noreply@gmail.com";
+    const template = "forgotPassword";
+    const send_from = process.env.USER_EMAIL;
+    const name = user.name;
+    const url = resetLink;
+
+    try {
+        await sendEmail(subject, send_to, send_from, reply_to, template, name, url);
+        res.status(200).json({
+            success: true,
+            message: "Email sent successfully, please check your email",
+        });
+    } catch (error) {
+        console.log("Error sending forgot password email: ", error);
+        return res.status(500).json({
+            success: false,
+            message: "Email could not be sent, please try again",
+        });
+    }
+
+});

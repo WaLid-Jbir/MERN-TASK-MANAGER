@@ -8,7 +8,7 @@ const tokenSchema = new mongoose.Schema({
     },
     verificationToken: {
         type: String,
-        required: true,
+        default: '',
     },
     passwordResetToken: {
         type: String,
