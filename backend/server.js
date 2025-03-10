@@ -4,6 +4,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import connect from './src/db/connect.js';
 import fs from 'fs';
+import errorHandler from './src/helpers/errorHandler.js';
 
 dotenv.config();
 
@@ -19,6 +20,8 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+// error handler middleware
+app.use(errorHandler);
 
 // routes
 const routeFiles = fs.readdirSync('./src/routes');
