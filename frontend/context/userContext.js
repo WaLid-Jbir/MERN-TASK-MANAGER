@@ -43,6 +43,37 @@ export const UserContextProvider = ({ children }) => {
         }
     }
 
+    // login user
+    const loginUser = async (e) => {
+        e.preventDefault();
+        if(!userState.email.includes('@') || !userState.password || userState.password.length < 6) {
+            toast.error('Please enter a valid email and password with at least 6 characters');
+            return;
+        }
+
+        try {
+            const res = await axios.post(`${serverUrl}/api/v1/login`, {
+                email: userState.email,
+                password: userState.password,
+            },
+            {
+                withCredentials: true, // send cookies with the request
+            });
+            console.log("User logged in successfully", res.data);
+            toast.success('You are logged in successfully');
+            //clear form
+            setUserState({
+                name: '',
+                email: '',
+                password: '',
+            });
+            router.push('/');
+        } catch (error) {
+            console.log("Error while logging in user", error);
+            toast.error(error.response.data.message);
+        }
+    }
+
     // dynamic form handler
     const handlerUserInput = (name) => (e) => {
         const value = e.target.value;
@@ -57,7 +88,8 @@ export const UserContextProvider = ({ children }) => {
             value={{
                 registerUser,
                 userState,
-                handlerUserInput
+                handlerUserInput,
+                loginUser
             }}>
             {children}
         </userContext.Provider>

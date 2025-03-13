@@ -2,10 +2,10 @@
 import { useUserContext } from '@/context/userContext';
 import React from 'react'
 
-const RegisterForm = () => {
+const LoginForm = () => {
 
-    const {registerUser, userState, handlerUserInput} = useUserContext();
-    const {name, email, password} = userState;
+    const {loginUser, userState, handlerUserInput} = useUserContext();
+    const {email, password} = userState;
     const [showPassword, setShowPassword] = React.useState(false);
 
     const togglePassword = () => {
@@ -17,31 +17,17 @@ const RegisterForm = () => {
         <div className='relative z-10'>
             <h1 className='mb-2 text-center text-[1.35rem] font-medium'>
                 {" "}
-                Register for an account
+                Login to your account
             </h1>
             <p className='mb-8 px-[2rem] text-center text-[#999] text-[14px]'>
-                Create an account. Aleready have an account? {" "}
+                Login Now. Don't have an account?{" "}
                 <a 
-                    href="/login" 
+                    href="/register" 
                     className='font-bold text-[#2ECC71] hover:text-[#7263F3] transition-all duration-300'
                 >
-                    Login here
+                    Register here
                 </a>
             </p>
-            <div className='flex flex-col'>
-                <label htmlFor="name" className='mb-1 text-[#999]'>
-                    Full Name
-                </label>
-                <input 
-                    type="text" 
-                    name="name" 
-                    id="name" 
-                    value={name}
-                    onChange={(e) => handlerUserInput("name")(e)}
-                    placeholder='John Doe' 
-                    className='px-4 py-3 border-[2px] border-gray-500 rounded-md outline-[#2ECC71] text-gray-800' 
-                />
-            </div>
             <div className='flex flex-col mt-[1rem]'>
                 <label htmlFor="email" className='mb-1 text-[#999]'>
                     Email
@@ -79,14 +65,19 @@ const RegisterForm = () => {
                     }
                 </button>
             </div>
+            <div className='mt-4 flex justify-end'>
+                <a href="/forgot-password" className='font-bold text-[#2ECC71] text-[14px] hover:text-[#7263F3] transition-all duration-300'>
+                    Forgot password?
+                </a>
+            </div>
             <div className="flex">
                 <button 
                     type='submit' 
-                    disabled={!name || !email || !password}
+                    disabled={ !email || !password}
                     className='mt-[1.5rem] flex-1 px-4 py-3 rounded-md bg-[#2ECC71] text-white font-medium cursor-pointer'
-                    onClick={registerUser}
+                    onClick={loginUser}
                 >
-                    Register Now
+                    Login Now
                 </button>
             </div>
         </div>
@@ -94,4 +85,4 @@ const RegisterForm = () => {
   )
 }
 
-export default RegisterForm;
+export default LoginForm;
