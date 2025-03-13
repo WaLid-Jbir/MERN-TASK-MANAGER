@@ -11,7 +11,7 @@ export const UserContextProvider = ({ children }) => {
 
     const router = useRouter();
 
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState({});
     const [userState, setUserState] = useState({
         name: '',
         email: '',
@@ -74,6 +74,44 @@ export const UserContextProvider = ({ children }) => {
         }
     }
 
+    // get user logged in status
+    const userLoginStatus = async () => {
+        let loggedIn = false;
+        try {
+            const res = await axios.get(`${serverUrl}/api/v1/login-status`, {
+                withCredentials: true, // send cookies with the request
+            });
+            // coerce the value to a boolean
+            loggedIn = !!res.data;
+            setLoading(false);
+
+            if(!loggedIn) {
+                router.push('/login');
+            }
+        }
+        catch (error) {
+            console.log("Error while getting user state", error);
+        }
+        console.log("User logged in status", loggedIn);
+
+        return loggedIn;
+    }
+
+    // logout user
+    const logoutUser = async () => {
+        try {
+            const res = await axios.get(`${serverUrl}/api/v1/logout`, {
+                withCredentials: true, // send cookies with the request
+            });
+            console.log("User logged out successfully", res.data);
+            toast.success('You are logged out successfully');
+            router.push('/login');
+        } catch (error) {
+            console.log("Error while logging out user", error);
+            toast.error(error.response.data.message);
+        }
+    }
+
     // dynamic form handler
     const handlerUserInput = (name) => (e) => {
         const value = e.target.value;
@@ -83,13 +121,18 @@ export const UserContextProvider = ({ children }) => {
         }));
     }
 
+    useEffect(() => {
+        userLoginStatus();
+    }, []);
+
     return (
         <userContext.Provider 
             value={{
                 registerUser,
                 userState,
                 handlerUserInput,
-                loginUser
+                loginUser,
+                logoutUser,
             }}>
             {children}
         </userContext.Provider>
