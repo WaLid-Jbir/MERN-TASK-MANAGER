@@ -17,7 +17,7 @@ export const UserContextProvider = ({ children }) => {
         email: '',
         password: '',
     });
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     // register user
     const registerUser = async (e) => {
@@ -112,6 +112,30 @@ export const UserContextProvider = ({ children }) => {
         }
     }
 
+    // get user data
+    const getUser = async () => {
+        setLoading(true);
+        try {
+            const res = await axios.get(`${serverUrl}/api/v1/user`, {
+                withCredentials: true, // send cookies with the request
+            });
+            console.log("User data: =========> ", res.data);
+            setUser((prevState) => {
+                return {
+                    ...prevState,
+                    ...res.data.user,
+                }
+            });
+
+            setLoading(false);
+        }
+        catch (error) {
+            console.log("Error while getting user data", error);
+            setLoading(false);
+            toast.error(error.response.data.message);
+        }
+    }
+
     // dynamic form handler
     const handlerUserInput = (name) => (e) => {
         const value = e.target.value;
@@ -122,7 +146,15 @@ export const UserContextProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        userLoginStatus();
+        const loginStatusGetUser = async () => {
+          const isLoggedIn = await userLoginStatus();
+    
+          if (isLoggedIn) {
+            await getUser();
+          }
+        };
+    
+        loginStatusGetUser();
     }, []);
 
     return (
@@ -133,6 +165,8 @@ export const UserContextProvider = ({ children }) => {
                 handlerUserInput,
                 loginUser,
                 logoutUser,
+                userLoginStatus,
+                user
             }}>
             {children}
         </userContext.Provider>
