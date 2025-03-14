@@ -136,6 +136,33 @@ export const UserContextProvider = ({ children }) => {
         }
     }
 
+    // update user
+    const updateUser = async (e, data) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            const res = await axios.patch(`${serverUrl}/api/v1/user`, data, {
+                withCredentials: true, // send cookies with the request
+            });
+
+            console.log("User updated successfully", res.data);
+
+            // update user state
+            setUser((prevState) => ({
+                ...prevState,
+                ...res.data,
+            }));
+
+            toast.success('User updated successfully');
+            setLoading(false);
+        }
+        catch (error) {
+            console.log("Error while updating user", error);
+            setLoading(false);
+            toast.error(error.response.data.message);
+        }
+    }
+
     // dynamic form handler
     const handlerUserInput = (name) => (e) => {
         const value = e.target.value;
@@ -157,6 +184,8 @@ export const UserContextProvider = ({ children }) => {
         loginStatusGetUser();
     }, []);
 
+    console.log("USER: ", user);
+
     return (
         <userContext.Provider 
             value={{
@@ -166,7 +195,8 @@ export const UserContextProvider = ({ children }) => {
                 loginUser,
                 logoutUser,
                 userLoginStatus,
-                user
+                user,
+                updateUser
             }}>
             {children}
         </userContext.Provider>
