@@ -208,6 +208,29 @@ export const UserContextProvider = ({ children }) => {
         }
     }
 
+    // forgot password
+    const forgotPasswordEmail = async (email) => {
+        setLoading(true);
+        try {
+            const res = await axios.post(`${serverUrl}/api/v1/forgot-password`, 
+                { 
+                    email
+                },
+                {
+                    withCredentials: true, // send cookies with the request
+                }
+            );
+            console.log("Forgot password email sent successfully", res.data);
+            toast.success("Password reset email sent successfully");
+            setLoading(false);
+        }
+        catch (error) {
+            console.log("Error sending forgot password email", error);
+            setLoading(false);
+            toast.error(error.response.data.message);
+        }
+    }
+
 
     // dynamic form handler
     const handlerUserInput = (name) => (e) => {
@@ -244,7 +267,9 @@ export const UserContextProvider = ({ children }) => {
                 user,
                 updateUser,
                 emailVerification,
-                verifyUser
+                verifyUser,
+                forgotPasswordEmail,
+                loading,
             }}>
             {children}
         </userContext.Provider>
