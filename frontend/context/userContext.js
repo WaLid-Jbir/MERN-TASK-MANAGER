@@ -183,6 +183,31 @@ export const UserContextProvider = ({ children }) => {
         }
     }
 
+    // verify email/user
+    const verifyUser = async (token) => {
+        setLoading(true);
+        try {
+            const res = await axios.post(`${serverUrl}/api/v1/verify-user/${token}`,
+            {
+                withCredentials: true, // send cookies with the request
+            });
+            toast.success("User verified successfully");
+
+            //refetch user details
+            await getUser();
+
+            setLoading(false);
+
+            //redirect user to home page
+            router.push('/');
+        }
+        catch (error) {
+            console.log("Error verifying user", error);
+            setLoading(false);
+            toast.error(error.response.data.message);
+        }
+    }
+
 
     // dynamic form handler
     const handlerUserInput = (name) => (e) => {
@@ -218,7 +243,8 @@ export const UserContextProvider = ({ children }) => {
                 userLoginStatus,
                 user,
                 updateUser,
-                emailVerification
+                emailVerification,
+                verifyUser
             }}>
             {children}
         </userContext.Provider>
