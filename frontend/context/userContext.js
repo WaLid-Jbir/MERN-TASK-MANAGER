@@ -256,6 +256,30 @@ export const UserContextProvider = ({ children }) => {
         }
     }
 
+    // change password
+    const changePassword = async (currentPassword, newPassword) => {
+        setLoading(true);
+        try {
+            const res = await axios.patch(`${serverUrl}/api/v1/change-password`, 
+                {
+                    currentPassword, 
+                    newPassword
+                }, 
+                {
+                    withCredentials: true, // send cookies with the request
+                }
+            );
+            console.log("Password changed successfully", res.data);
+            toast.success("Password changed successfully");
+            setLoading(false);
+        }
+        catch (error) {
+            console.log("Error changing password", error);
+            setLoading(false);
+            toast.error(error.response.data.message);
+        }
+    }
+
     // dynamic form handler
     const handlerUserInput = (name) => (e) => {
         const value = e.target.value;
@@ -294,7 +318,8 @@ export const UserContextProvider = ({ children }) => {
                 verifyUser,
                 forgotPasswordEmail,
                 loading,
-                resetPassword
+                resetPassword,
+                changePassword
             }}>
             {children}
         </userContext.Provider>

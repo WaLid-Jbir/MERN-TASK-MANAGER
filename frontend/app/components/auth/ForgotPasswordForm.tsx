@@ -49,7 +49,7 @@ const ForgotPasswordForm = () => {
         </button>
       </div>
     </div>
-    {/* <img src="/flurry.png" alt="" /> */}
+    <img src="/flurry.png" alt="" />
   </form>
   )
 }
