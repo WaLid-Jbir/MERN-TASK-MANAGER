@@ -76,3 +76,43 @@ export const getTask = asyncHandler(async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+// update task
+export const updateTask = asyncHandler(async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const {id} = req.params;
+        const {title, description, dueDate, status, priority, completed} = req.body;
+
+        if(!id) {
+            res.status(400).json({ message: "Task id is required!" });
+        }
+
+        const task = await Task.findById(id);
+
+        if(!task) {
+            res.status(404).json({ message: "Task not found!" });
+        }
+
+        // check if the user is the owner of the task
+        if(!task.user.equals(userId)) {
+            res.status(403).json({ message: "You are not authorized to update this task!" });
+        }
+
+        // update task with new data
+        task.title = title || task.title;
+        task.description = description || task.description;
+        task.dueDate = dueDate || task.dueDate;
+        task.status = status || task.status;
+        task.priority = priority || task.priority;
+        task.completed = completed || task.completed;
+        
+        await task.save();
+
+        res.status(200).json(task);
+    }
+    catch (error) {
+        console.log("Error updating task: ", error);
+        res.status(500).json({ message: error.message });
+    }
+});
