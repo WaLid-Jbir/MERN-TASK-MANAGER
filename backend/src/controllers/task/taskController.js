@@ -20,7 +20,6 @@ export const createTask = asyncHandler(async (req, res) => {
       description,
       dueDate,
       status,
-      completed,
       priority,
       user: req.user._id,
     });
@@ -39,9 +38,41 @@ export const getTasks = asyncHandler(async (req, res) => {
   try {
     const userId = req.user._id;
     const tasks = await Task.find({ user: userId });
-    res.status(200).json(tasks);
+    res.status(200).json({
+        length: tasks.length,
+        tasks
+    });
   } catch (error) {
-    console.log("Error getting tasks: ", error);
+    console.log("Error fetching tasks: ", error);
     res.status(500).json({ message: error.message });
   }
+});
+
+// get single task
+export const getTask = asyncHandler(async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        const {id} = req.params;
+
+        if(!id) {
+            res.status(400).json({ message: "Task id is required!" });
+        }
+
+        const task = await Task.findById(id);
+
+        if(!task) {
+            res.status(404).json({ message: "Task not found!" });
+        }
+
+        if(!task.user.equals(userId)) {
+            res.status(403).json({ message: "You are not authorized to view this task!" });
+        }
+
+        res.status(200).json(task);
+
+    } catch (error) {
+        console.log("Error fetching task: ", error);
+        res.status(500).json({ message: error.message });
+    }
 });
