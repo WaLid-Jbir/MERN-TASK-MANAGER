@@ -20,7 +20,7 @@ const MiniSidebar = () => {
     const navItems = [
         {
             title: 'All',
-            icon: <IconGrid />,
+            icon: <IconGrid  strokeColor={getStrokeColor("/")} />,
             link: '/'
         },
         {

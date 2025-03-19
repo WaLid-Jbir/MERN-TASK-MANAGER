@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import UserProvider from "@/providers/UserProvider";
 import { Toaster } from "react-hot-toast";
-import MiniSidebar from "./components/auth/sidebar/MiniSidebar";
+import MiniSidebar from "./components/auth/mini-sidebar/MiniSidebar";
 import Header from "./components/auth/header/Header";
 import MainContentLayout from "@/providers/MainContentLayout";
 import SidebarProvider from "@/providers/SidebarProvider";
