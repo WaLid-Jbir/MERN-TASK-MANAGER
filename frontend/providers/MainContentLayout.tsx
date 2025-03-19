@@ -11,7 +11,7 @@ const MainContentLayout = ({ children }: MainContentLayoutProps) => {
     const userId = useUserContext().user._id;
 
     return (
-        <main className={`${userId ? 'pt-[20rem]' : ''} pb-[1.5rem] flex h-full`}>
+        <main className={`${userId ? 'pr-[20rem]' : ''} pb-[1.5rem] flex h-full`}>
             {children}
         </main>
     )
