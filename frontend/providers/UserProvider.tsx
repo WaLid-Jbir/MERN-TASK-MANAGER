@@ -2,6 +2,7 @@
 
 import React from "react";
 import { UserContextProvider } from "../context/userContext";
+import { TasksProvider } from "../context/taskContext";
 
 interface Props {
     children: React.ReactNode;
@@ -10,7 +11,9 @@ interface Props {
 function UserProvider({children}: Props) {
   return (
     <UserContextProvider>
+      <TasksProvider>
         {children}
+      </TasksProvider>
     </UserContextProvider>
   ) ;
 }
