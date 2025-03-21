@@ -14,6 +14,8 @@ export const TasksProvider = ({ children }) => {
     const [task, setTask] = React.useState({});
     const [loading, setLoading] = React.useState(false);
 
+    const [priority, setPriority] = React.useState("all");
+
     // get all tasks
     const getTasks = async () => {
         setLoading(true);
@@ -98,6 +100,15 @@ export const TasksProvider = ({ children }) => {
             value={
                 {   
                     tasks,
+                    task,
+                    loading,
+                    getTasks,
+                    getTask,
+                    createTask,
+                    updateTask,
+                    deleteTask,
+                    priority,
+                    setPriority
                 }
             }>
             {children}

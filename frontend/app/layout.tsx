@@ -3,12 +3,12 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import UserProvider from "@/providers/UserProvider";
 import { Toaster } from "react-hot-toast";
-import MiniSidebar from "./components/auth/mini-sidebar/MiniSidebar";
-import Header from "./components/auth/header/Header";
+import Header from "./components/header/Header";
 import MainContentLayout from "@/providers/MainContentLayout";
 import SidebarProvider from "@/providers/SidebarProvider";
 import MainLayout from "@/providers/MainLayout";
 import { Inter } from "next/font/google";
+import MiniSidebar from "./components/mini-sidebar/MiniSidebar";
 
 const inter = Inter({
   subsets: ["latin"],

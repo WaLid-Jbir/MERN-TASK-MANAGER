@@ -1,5 +1,5 @@
 "use client";
-import Sidebar from '@/app/components/auth/sidebar/Sidebar';
+import Sidebar from '@/app/components/sidebar/Sidebar';
 import { useUserContext } from '@/context/userContext';
 import React from 'react'
 
