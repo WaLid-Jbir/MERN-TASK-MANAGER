@@ -1,3 +1,4 @@
+import { useTasks } from '@/context/taskContext';
 import { edit, star, trash } from '@/utils/icons';
 import { Task } from '@/utils/types';
 import { formatTime } from '@/utils/utilities';
@@ -8,6 +9,8 @@ interface TaskItemProps {
 }
 
 const TaskItem = ({task}: TaskItemProps) => {
+
+  const { getTask, deleteTask, openModalForEdit, modalMode } = useTasks();
 
     const getPriorityColor = (priority: string) => {
       switch (priority) {
@@ -25,7 +28,7 @@ const TaskItem = ({task}: TaskItemProps) => {
   return (
     <div className="h-[16rem] px-4 py-3 flex flex-col gap-4 shadow-sm bg-[#f9f9f9] rounded-lg border-2 border-white">
       <div>
-        <h4>{task.title}</h4>
+        <h4 className="font-bold text-2xl">{task.title}</h4>
         <p>{task.description}</p>
       </div>
       <div className='mt-auto flex justify-between items-center'>
@@ -42,12 +45,27 @@ const TaskItem = ({task}: TaskItemProps) => {
                 >
                 {star}
                 </button>
-                <button className='text-[#00A1F1]'>
+                <button 
+                  className='text-[#00A1F1]'
+                  onClick={() => {
+                    getTask(task._id);
+                    openModalForEdit(task);
+                  }}
+                >
                     {edit}
                 </button>
-                <button className='text-[#EB4E31]'>
+                <button 
+                  className='text-[#EB4E31]'
+                >
                     {trash}
                 </button>
+                {/*
+                            *** *** *** ***
+                            *** *** *** ***
+                            *** 4:13:08 ***
+                            *** *** *** ***
+                            *** *** *** ***
+                */}
             </div>
         </div>
       </div>

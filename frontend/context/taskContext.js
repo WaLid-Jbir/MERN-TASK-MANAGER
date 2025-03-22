@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { createContext, useEffect } from "react";
 import { useUserContext } from "./userContext";
+import toast from "react-hot-toast";
 
 const TasksContext = createContext();
 
@@ -14,7 +15,35 @@ export const TasksProvider = ({ children }) => {
     const [task, setTask] = React.useState({});
     const [loading, setLoading] = React.useState(false);
 
+    const [isEditing, setIsEditing] = React.useState(false);
     const [priority, setPriority] = React.useState("all");
+    const [activeTask, setActiveTask] = React.useState(null);
+    const [modalMode, setModalMode] = React.useState("");
+    const [profileModal, setProfileModal] = React.useState(false);
+
+    const openModalForAdd = () => {
+        setModalMode("add");
+        setIsEditing(true);
+        setTask({});
+    }
+
+    const openProfileModal = () => {
+        setProfileModal(true);
+    }
+    
+    const openModalForEdit = (task) => {
+        setModalMode("edit");
+        setIsEditing(true);
+        setActiveTask(task);
+    }
+
+    const closeModal = () => {
+        setIsEditing(false);
+        setProfileModal(false);
+        setModalMode("");
+        setActiveTask(null);
+        setTask({});
+    }
 
     // get all tasks
     const getTasks = async () => {
@@ -34,7 +63,7 @@ export const TasksProvider = ({ children }) => {
         setLoading(true);
         try {
             const response = await axios.get(`${serverURL}/task/${taskId}`);
-            setTasks(response.data);
+            setTask(response.data);
             setLoading(false);
         } catch (error) {
             console.log("Error getting task", error);
@@ -47,7 +76,8 @@ export const TasksProvider = ({ children }) => {
         setLoading(true);
         try {
             const res = await axios.post(`${serverURL}/task/create`, task);
-            setTasks(...tasks, res.data);
+            setTasks([...tasks, res.data]);
+            toast.success("Task created successfully");
         }
         catch (error) {
             console.log("Error creating task", error);
@@ -67,6 +97,7 @@ export const TasksProvider = ({ children }) => {
             });
             setTasks(newTasks);
             setLoading(false);
+            toast.success("Task updated successfully");
         }
         catch (error) {
             console.log("Error updating task", error);
@@ -90,6 +121,15 @@ export const TasksProvider = ({ children }) => {
         }
     }
 
+    const handleInput = (name) => (e) => {
+        if (name === "setTask") {
+            setTask(e);
+        }
+        else{
+            setTask({...task, [name]: e.target.value});
+        }
+    }
+
     useEffect(() => {
         getTasks();
     }, [userId]);
@@ -108,7 +148,14 @@ export const TasksProvider = ({ children }) => {
                     updateTask,
                     deleteTask,
                     priority,
-                    setPriority
+                    setPriority,
+                    handleInput,
+                    isEditing,
+                    openModalForAdd,
+                    openModalForEdit,
+                    activeTask,
+                    closeModal,
+                    modalMode,
                 }
             }>
             {children}
