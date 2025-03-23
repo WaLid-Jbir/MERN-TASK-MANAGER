@@ -130,6 +130,12 @@ export const TasksProvider = ({ children }) => {
         }
     }
 
+    // get completed tasks
+    const completedTasks = tasks.filter((task) => task.completed);
+
+    // get pending tasks
+    const activeTasks = tasks.filter((task) => !task.completed);
+
     useEffect(() => {
         getTasks();
     }, [userId]);
@@ -156,6 +162,9 @@ export const TasksProvider = ({ children }) => {
                     activeTask,
                     closeModal,
                     modalMode,
+                    openProfileModal,
+                    completedTasks,
+                    activeTasks
                 }
             }>
             {children}

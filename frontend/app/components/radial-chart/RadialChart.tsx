@@ -1,7 +1,6 @@
-"use client"
-
-import { TrendingUp } from "lucide-react"
-import { Label, PolarRadiusAxis, RadialBar, RadialBarChart } from "recharts"
+"use client";
+import { TrendingUp } from "lucide-react";
+import { Label, PolarRadiusAxis, RadialBar, RadialBarChart } from "recharts";
 
 import {
   Card,
@@ -10,14 +9,16 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
-const chartData = [{ pending: "80", completed: "20" }]
+} from "@/components/ui/chart";
+import { useTasks } from "@/context/taskContext";
+
+export const description = "A radial chart with stacked sections";
 
 const chartConfig = {
   desktop: {
@@ -28,16 +29,24 @@ const chartConfig = {
     label: "Pending",
     color: "#EB4E31",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
-export function RadialChart() {
-  const totalTasks = 100;
+function RadialCHart() {
+  const { tasks, completedTasks, activeTasks } = useTasks();
+  const tasksTotal = tasks.length;
+
+  const chartData = [
+    {
+      pending: activeTasks.length,
+      completed: completedTasks.length,
+    },
+  ];
 
   return (
     <Card className="flex flex-col border-2 border-white shadow-none bg-[#EDEDED]">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Tasks Status</CardTitle>
-        <CardDescription>( Completed / Pending )</CardDescription>
+        <CardTitle>Comleted vs Pending Tasks</CardTitle>
+        <CardDescription>Task completion status.</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-1 items-center pb-0">
         <ChartContainer
@@ -65,7 +74,7 @@ export function RadialChart() {
                           y={(viewBox.cy || 0) - 16}
                           className="fill-foreground text-2xl font-bold"
                         >
-                          {totalTasks}
+                          {tasksTotal}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
@@ -75,7 +84,7 @@ export function RadialChart() {
                           Tasks
                         </tspan>
                       </text>
-                    )
+                    );
                   }
                 }}
               />
@@ -107,7 +116,7 @@ export function RadialChart() {
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }
 
-export default RadialChart
+export default RadialCHart;
