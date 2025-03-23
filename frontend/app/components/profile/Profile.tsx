@@ -1,4 +1,5 @@
 "use client";
+import { useTasks } from '@/context/taskContext';
 import { useUserContext } from '@/context/userContext';
 import Image from 'next/image';
 import React from 'react'
@@ -6,6 +7,7 @@ import React from 'react'
 const Profile = () => {
 
     const {user} = useUserContext();
+    const {tasks, activeTasks, completedTasks} = useTasks();
 
   return (
     <div className='m-6'>
@@ -36,7 +38,7 @@ const Profile = () => {
             <p className="pl-4 relative flex gap-2">
               <span className="absolute h-[70%] w-[0.2rem] left-[1px] top-1/2 translate-y-[-50%] bg-purple-500 rounded-[5px]"></span>
               <span className="font-medium text-4xl text-[#333]">
-                10
+                {tasks.length}
               </span>
             </p>
           </div>
@@ -45,7 +47,7 @@ const Profile = () => {
             <p className="pl-4 relative flex gap-2">
               <span className="absolute h-[70%] w-[0.2rem] left-[1px] top-1/2 translate-y-[-50%] bg-[#3AAFAE] rounded-[5px]"></span>
               <span className="font-medium text-4xl text-[#333]">
-                5
+                {activeTasks.length}
               </span>
             </p>
           </div>
@@ -54,7 +56,7 @@ const Profile = () => {
             <p className="pl-4 relative flex gap-2">
               <span className="absolute h-[70%] w-[0.2rem] left-[1px] top-1/2 translate-y-[-50%] bg-orange-400 rounded-[5px]"></span>
               <span className="font-medium text-4xl text-[#333]">
-                5
+                {activeTasks.length}
               </span>
             </p>
           </div>
@@ -63,7 +65,7 @@ const Profile = () => {
             <p className="pl-4 relative flex gap-2">
               <span className="absolute h-[70%] w-[0.2rem] left-[1px] top-1/2 translate-y-[-50%] bg-green-400 rounded-[5px]"></span>
               <span className="font-medium text-4xl text-[#333]">
-                2
+                {completedTasks.length}
               </span>
             </p>
           </div>

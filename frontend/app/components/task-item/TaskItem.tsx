@@ -56,13 +56,15 @@ const TaskItem = ({task}: TaskItemProps) => {
                 </button>
                 <button 
                   className='text-[#EB4E31]'
+                  // confirmation before delete
+                  onClick={() => { if (window.confirm('Are you sure you wish to delete this task?')) deleteTask(task._id) } }
                 >
                     {trash}
                 </button>
                 {/*
                             *** *** *** ***
                             *** *** *** ***
-                            *** 4:13:08 ***
+                            *** 4:19:50 ***
                             *** *** *** ***
                             *** *** *** ***
                 */}
