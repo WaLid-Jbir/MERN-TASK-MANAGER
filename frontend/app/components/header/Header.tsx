@@ -1,4 +1,5 @@
 "use client";
+import { useTasks } from "@/context/taskContext";
 import { useUserContext } from "@/context/userContext";
 import { github, moon, profile } from "@/utils/icons";
 import Link from "next/link";
@@ -7,6 +8,7 @@ import React from "react";
 
 function Header() {
   const { user } = useUserContext();
+  const { activeTasks, openModalForAdd } = useTasks();
 
   const router = useRouter();
 
@@ -28,7 +30,7 @@ function Header() {
             <>
               You have{" "}
               <span className="font-bold text-[#3aafae]">
-                5
+                {activeTasks.length}
               </span>
               &nbsp;active tasks
             </>
@@ -41,6 +43,7 @@ function Header() {
         <button
           className="px-8 py-3 bg-[#3aafae] text-white rounded-[50px]
           hover:bg-[#00A1F1] hover:text-white transition-all duration-200 ease-in-out"
+          onClick={openModalForAdd}
         >
           {userId ? "Add a new Task" : "Login / Register"}
         </button>
