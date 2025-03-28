@@ -3,6 +3,8 @@ import { edit, star, trash } from '@/utils/icons';
 import { Task } from '@/utils/types';
 import { formatTime } from '@/utils/utilities';
 import React from 'react'
+import { motion } from 'framer-motion';
+import { item } from '@/utils/animations';
 
 interface TaskItemProps {
   task: Task;
@@ -26,7 +28,9 @@ const TaskItem = ({task}: TaskItemProps) => {
     }
 
   return (
-    <div className="h-[16rem] px-4 py-3 flex flex-col gap-4 shadow-sm bg-[#f9f9f9] rounded-lg border-2 border-white">
+    <motion.div className="h-[16rem] px-4 py-3 flex flex-col gap-4 shadow-sm bg-[#f9f9f9] rounded-lg border-2 border-white"
+      variants = {item}
+    >
       <div>
         <h4 className="font-bold text-2xl">{task.title}</h4>
         <p>{task.description}</p>
@@ -64,14 +68,14 @@ const TaskItem = ({task}: TaskItemProps) => {
                 {/*
                             *** *** *** ***
                             *** *** *** ***
-                            *** 4:34:28 ***
+                            *** 4:44:43 ***
                             *** *** *** ***
                             *** *** *** ***
                 */}
             </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 
