@@ -43,7 +43,13 @@ function Header() {
         <button
           className="px-8 py-3 bg-[#3aafae] text-white rounded-[50px]
           hover:bg-[#00A1F1] hover:text-white transition-all duration-200 ease-in-out"
-          onClick={openModalForAdd}
+          onClick={()=> {
+            if (userId) {
+              openModalForAdd();
+            } else {
+              router.push('/login');
+            }
+          }}
         >
           {userId ? "Add a new Task" : "Login / Register"}
         </button>

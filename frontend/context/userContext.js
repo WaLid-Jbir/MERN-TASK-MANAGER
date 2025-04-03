@@ -67,7 +67,6 @@ export const UserContextProvider = ({ children }) => {
             toast.success('You are logged in successfully');
             //clear form
             setUserState({
-                name: '',
                 email: '',
                 password: '',
             });
