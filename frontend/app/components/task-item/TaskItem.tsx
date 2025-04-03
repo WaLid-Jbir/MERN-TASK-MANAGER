@@ -65,13 +65,6 @@ const TaskItem = ({task}: TaskItemProps) => {
                 >
                     {trash}
                 </button>
-                {/*
-                            *** *** *** ***
-                            *** *** *** ***
-                            *** 4:44:43 ***
-                            *** *** *** ***
-                            *** *** *** ***
-                */}
             </div>
         </div>
       </div>
